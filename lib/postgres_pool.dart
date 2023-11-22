@@ -7,6 +7,7 @@ import 'package:postgres/legacy.dart';
 import 'package:postgres/postgres.dart';
 import 'package:retry/retry.dart';
 
+export 'package:postgres/legacy.dart';
 export 'package:postgres/postgres.dart';
 
 /// A session is a continuous use of a single connection (inside or outside of a
