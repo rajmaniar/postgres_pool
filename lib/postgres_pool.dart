@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:executor/executor.dart';
+import 'package:postgres/legacy.dart';
 import 'package:postgres/postgres.dart';
 import 'package:retry/retry.dart';
 
@@ -487,17 +488,21 @@ class PgPool implements PostgreSQLExecutionContext {
       for (var i = 3; i > 0; i--) {
         final sw = Stopwatch()..start();
         try {
-          final c = PostgreSQLConnection(
-            _url.host,
-            _url.port,
-            _url.database,
-            username: _url.username,
-            password: _url.password,
-            useSSL: _url.requireSsl,
-            isUnixSocket: _url.isUnixSocket,
-            timeoutInSeconds: settings.connectTimeout.inSeconds,
-            queryTimeoutInSeconds: settings.queryTimeout.inSeconds,
-            timeZone: settings.timeZone,
+          final legacySSLMode = _url.requireSsl ? SslMode.require : SslMode.disable;
+          final connectionSettings = ConnectionSettings(
+              sslMode: legacySSLMode,
+              connectTimeout: settings.connectTimeout,
+              queryTimeout: settings.queryTimeout,
+              timeZone: settings.timeZone
+          );
+          final c = PostgreSQLConnection.withV3(
+            Endpoint(host:_url.host,
+              port: _url.port,
+              database: _url.database,
+              username: _url.username,
+              password: _url.password,
+                isUnixSocket: _url.isUnixSocket),
+              connectionSettings: connectionSettings
           );
           await c.open();
           final ctx = _ConnectionCtx(connectionId, c);

@@ -11,6 +11,7 @@ analyzer:
     unused_import: error
     unused_local_variable: error
     dead_code: error
+    deprecated_member_use: ignore #Remove after fulling migrating to postgres v3 package
   strong-mode:
     implicit-casts: false
 
@@ -26,8 +27,7 @@ linter:
   #  - empty_catches
   - empty_statements
   - hash_and_equals
-  - iterable_contains_unrelated_type
-  - list_remove_unrelated_type
+  - collection_methods_unrelated_type
   - no_adjacent_strings_in_list
   - no_duplicate_case_values
   - non_constant_identifier_names
